@@ -1,4 +1,5 @@
 'use strict';
+//这一部分花了我几乎两个小时，因为对js函数不熟悉，跟其他语言混在一起了，然后陷入了误区，大大超过了预设时间
 function getItemCount(inputItem){
     let iResult=[];
    
@@ -28,7 +29,7 @@ iResult.filter((number)=>{
 return result;
     
 }
-
+//实际：20分钟，5分钟用于测试
 function getReceipt(inputItem){
     let myItem=getItemCount(inputItem);
     let allItem=loadAllItems();
@@ -42,7 +43,7 @@ return iResult[0];
     })
     return result;
 }
-
+//实际：20分钟，4分钟测试
  function getPreferential(inputItem){
      let myItem=getReceipt(inputItem);
      let promotion=(loadPromotions())[0].barcodes;
@@ -56,6 +57,7 @@ return iResult[0];
      });
      return resultItem;
      }
+//15分钟，10分钟用于修改最后的格式
 function printReceipt(inputItem){
     let myReceipt=`***<没钱赚商店>收据***\n`;
     let myItem=getPreferential(inputItem);
