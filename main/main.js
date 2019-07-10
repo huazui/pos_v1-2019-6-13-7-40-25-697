@@ -1,14 +1,4 @@
 'use strict';
-const tags = [
-    'ITEM000001',
-    'ITEM000001',
-    'ITEM000001',
-    'ITEM000001',
-    'ITEM000001',
-    'ITEM000003-2.5',
-    'ITEM000005',
-    'ITEM000005-2',
-  ]
 function getItemCount(inputItem){
     let iResult=[];
    
@@ -20,43 +10,57 @@ function getItemCount(inputItem){
         else {iResult.push({"name":number,"count":1});
     }
 });
-        
+let result=[{"name":(iResult[0]).name,"count":0}];
+iResult.filter((number)=>{
+
+    let long=result.length;
+    for(let i=0;i<long;i++){
+       
+        if(result[i].name==number.name){
+            result[i].count=parseFloat(number.count)+parseFloat(result[i].count);
+            break;
+        }
+         if(i==long-1){
+            result.push(number);
+        }
+    }
+});
+return result;
     
 }
 
 function getReceipt(inputItem){
     let myItem=getItemCount(inputItem);
     let allItem=loadAllItems();
-    let result=imyItem.map(function(number){
+    let result=myItem.map(function(number){
         let iResult=[];
         allItem.filter((InNumber)=>{
-            if(number[name]==InNumber.barcode)
-            iResult.push({"name":number.name,"count":number.count,"unit":InNumber.unit,"price":InNumber.price,"sumPrice":(number.count*InNumber.price).toFixed(2)});
+            if(number.name==InNumber.barcode)
+            iResult.push({"name":number.name,"chinaName":InNumber.name,"count":parseFloat(number.count),"unit":InNumber.unit,"price":InNumber.price,"sumPrice":(parseFloat(number.count*InNumber.price))});
         });
-return iResult;
+return iResult[0];
     })
     return result;
 }
 
  function getPreferential(inputItem){
      let myItem=getReceipt(inputItem);
-     let promotion=loadPromotions();
-     myItem.map((number)=>{
-         if(number.name in promotion.barcode){
-            if(number.count>2){
-                number.count++;
-            }
-
-         }
+     let promotion=(loadPromotions())[0].barcodes;
+    let resultItem=myItem.map((number)=>{
+        promotion.filter((inNumber)=>{
+          if(number.name==inNumber&&number.count>2){
+              number.sumPrice=parseFloat((number.count-1)*number.price);
+          }
+        })
          return number;
      });
-     return myItem;
+     return resultItem;
      }
 function printReceipt(inputItem){
     let myReceipt=`***<没钱赚商店>收据***\n`;
-    myItem=getPreferential(inputItem);
+    let myItem=getPreferential(inputItem);
     myItem.filter((number)=>{
-        myReceipt=`${myReceipt}名称：${number}，数量：${number.count}${number.unit}，单价：${number.price}(元)，小计：${number.sumPrice}\n`
+        myReceipt=`${myReceipt}名称：${number.chinaName}，数量：${number.count}${number.unit}，单价：${(number.price).toFixed(2)}(元)，小计：${(number.sumPrice).toFixed(2)}(元)\n`
     });
     let sum=0;
    let befor=0;
@@ -65,10 +69,10 @@ function printReceipt(inputItem){
         befor+=number.count*number.price;
 
     });
-   let lessMoney=bdfor-sum;
-    myReceipt=`${myReceipt}----------------------\n总计：${sum.toFixed(2)}(元)\n节省：${less.toFixed(2)}(元)`;
+   let lessMoney=befor-sum;
+    myReceipt=`${myReceipt}----------------------\n总计：${sum.toFixed(2)}(元)\n节省：${lessMoney.toFixed(2)}(元)\n**********************`;
 
-return myReceipt;
+console.log(myReceipt);
 
 }
 
